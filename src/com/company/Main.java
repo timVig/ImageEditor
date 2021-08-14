@@ -19,7 +19,7 @@ public class Main {
     private final static String[] rotationAngles = { "90", "180", "270" };
     private final static String[] flipOptions = { "horizontal", "vertical" };
     private final static String[] fontOptions = { "TimesNewRoman", "Calibri", "SansSerif" };
-    private final static String[] fileIO = {"Save Image", "Load Image"};
+    private final static String[] fileIO = {"Load Image", "Save Image"};
     private static int rotateMode = 1;
 
     private static int[][] imageGrid = initWhiteImage1000500();
@@ -27,7 +27,6 @@ public class Main {
     private static int[][] sliderImage = initWhiteImage1000500();
     private static int imageWidth = 1000;
     private static int imageHeight = 500;
-    private static int scaleFactor = 1;
     private static JFrame frame;
     private static JComboBox<String> fonts;
     private static JTextField fontSize;
@@ -131,7 +130,7 @@ public class Main {
         for( int i = 0; i < fileIO.length; i++ ){
             JButton button = new JButton(fileIO[i]);
             button.setBounds( 20, offset, imageWidth, buttonHeight );
-            button.addActionListener(new IOButtonListener( 1 ));
+            button.addActionListener(new IOButtonListener( i ));
             frame.add( button );
             offset += heightSpacing;
         }
@@ -286,7 +285,7 @@ public class Main {
         int action;
         public IOButtonListener( int act ){ super(); action = act; }
         @Override public void actionPerformed(ActionEvent e) {
-            if( action == 0 )
+            if( action == 0 ) {
                 try {
                     int[][] fileImage = promptForImageFile();
                     imageWidth = fileImage.length;
@@ -296,8 +295,10 @@ public class Main {
                     originalImage = new int[fileImage.length][fileImage[0].length];
                     sliderImage = new int[fileImage.length][fileImage[0].length];
 
-                    for( int i = 0; i < fileImage.length; i++ ){
-                        for( int j = 0; j < fileImage[0].length; j++ ){
+                    System.out.println("Changing arrays " + fileImage.length + " " + fileImage[0].length );
+
+                    for (int i = 0; i < fileImage.length; i++) {
+                        for (int j = 0; j < fileImage[0].length; j++) {
                             imageGrid[i][j] = fileImage[i][j];
                             originalImage[i][j] = fileImage[i][j];
                             sliderImage[i][j] = fileImage[i][j];
@@ -305,7 +306,11 @@ public class Main {
                     }
 
                     resetFrame();
-                } catch (IOException ioException) { ioException.printStackTrace(); }
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            }
+
             if( action == 1 ) {
                 try { FileIOHandler.writeImage(imageGrid, frame); }
                 catch (IOException ioException) { ioException.printStackTrace(); }
